@@ -1,0 +1,167 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+#whiteboard {
+  display: block;
+}
+
+body {
+  background-color: white;
+  overflow-x: clip;
+}
+
+.tools {
+  left: 0;
+  top: 50%;
+  translate: 0 -50%;
+  transform: translateX(-90%);
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-left-color: transparent;
+}
+
+.tools,
+.properties {
+  position: absolute;
+  padding: 10px;
+  display: grid;
+  gap: 0.5rem;
+  border: 1px solid #aaa;
+  transition: transform 0.3s 2s;
+}
+
+.properties {
+  right: 0;
+  top: 50%;
+  translate: 0 -50%;
+  transform: translateX(90%);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.circle,
+.d-circle {
+  width: 22px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.d-circle {
+  display: grid;
+  place-items: center;
+}
+
+.d-circle path {
+  transition: fill 0.3s;
+}
+
+.d-btn {
+  display: grid;
+  place-items: center;
+}
+
+.d-btn:hover {
+  background-color: hsl(0 0% 0% / 0.2);
+}
+
+.d-btn.active {
+  background-color: #333;
+}
+
+.d-btn:disabled {
+  background-color: lightgray;
+}
+
+.d-btn:disabled path {
+  fill: gray;
+}
+
+.active .d-circle path {
+  fill: white;
+}
+
+.width .circle {
+  background-color: #333;
+}
+
+.width button.active .circle {
+  background-color: white;
+}
+
+.colors,
+.width {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.properties hr {
+  color: hsl(0 0% 0% / 0.2);
+}
+
+.show-btn {
+  content: "";
+  position: absolute;
+  width: 25px;
+  top: 50%;
+  translate: 0 -50%;
+  height: 50px;
+  display: grid;
+  place-items: center;
+}
+
+.tools .show-btn {
+  right: -30px;
+}
+
+.properties .show-btn {
+  left: -30px;
+}
+
+.tools:hover,
+.properties:hover {
+  transform: none;
+  transition-delay: 0s;
+}
+
+button {
+  background-color: transparent;
+  border: none;
+}
+
+.tools > button:not(.show-btn),
+.properties button:not(.show-btn) {
+  border-radius: 5px;
+  aspect-ratio: 1;
+  width: 40px;
+  display: grid;
+  place-items: center;
+  transition: background-color 0.3s;
+}
+
+.tools > button:not(.show-btn) path {
+  stroke: #333;
+  transition: fill 0.3s;
+}
+
+.tools > button:not(.show-btn).active,
+.width button:not(.show-btn).active {
+  background-color: #333;
+}
+
+.tools > button:not(.show-btn).active path {
+  stroke: white;
+}
+
+.tools > button:not(.show-btn):hover:not(.active),
+.width button:not(.show-btn):hover:not(.active) {
+  background-color: hsl(0 0% 0% / 0.2);
+}
