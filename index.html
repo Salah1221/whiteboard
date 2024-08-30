@@ -1,130 +1,98 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mini-whiteboard</title>
-    <link rel="stylesheet" href="styles.css" />
-    <script src="main.js" defer></script>
-  </head>
 
-  <body>
-    <div class="tools">
-      <button class="show-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini-whiteboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="js/main.js" type="module" defer></script>
+</head>
+
+<body>
+  <div class="tools">
+    <button class="show-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+        <path
+          d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"
+          fill="#333" />
+      </svg>
+    </button>
+    <button class="active">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M15.612 3.23725L17.299 1.54925C17.6507 1.19757 18.1277 1 18.625 1C19.1223 1 19.5993 1.19757 19.951 1.54925C20.3027 1.90092 20.5002 2.3779 20.5002 2.87525C20.5002 3.37259 20.3027 3.84957 19.951 4.20125L5.582 18.5702C5.05332 19.0986 4.40137 19.487 3.685 19.7002L1 20.5002L1.8 17.8152C2.01328 17.0989 2.40163 16.4469 2.93 15.9182L15.613 3.23725H15.612ZM15.612 3.23725L18.25 5.87525"
+          stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+    <button>
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M10.872 20.744C16.3241 20.744 20.744 16.3241 20.744 10.872C20.744 5.41984 16.3241 1 10.872 1C5.41984 1 1 5.41984 1 10.872C1 16.3241 5.41984 20.744 10.872 20.744Z"
+          stroke="black" stroke-width="1.5" />
+      </svg>
+    </button>
+    <button>
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L18.8832 18.8832" stroke="black" stroke-width="1.5" />
+      </svg>
+    </button>
+  </div>
+  <div class="properties">
+    <button class="show-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+        <path
+          d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"
+          fill="#333" />
+      </svg>
+    </button>
+    <div class="colors">
+      <button class="active">
+        <div class="circle" data-color="red"></div>
+      </button>
+      <button>
+        <div class="circle" data-color="magenta"></div>
+      </button>
+      <button>
+        <div class="circle" data-color="black"></div>
+      </button>
+      <button>
+        <div class="circle" data-color="blue"></div>
+      </button>
+      <button>
+        <div class="circle" data-color="orange"></div>
+      </button>
+      <button>
+        <div class="circle" data-color="purple"></div>
+      </button>
+    </div>
+    <hr />
+    <button class="d-btn" title="Turn on/off pressure sensitivity for supported devices">
+      <div class="d-circle">
+        <svg viewBox="0 0 52 76" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
-            d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"
-            fill="#333"
-          />
+            d="M0.213625 76.0001C-3.78644 21.5001 49.7138 40 49.7138 0C60.7136 67.5001 2.4573 39.5 0.213625 76.0001Z"
+            fill="#333333" />
         </svg>
+      </div>
+    </button>
+    <hr />
+    <div class="width">
+      <button>
+        <div class="circle" data-width="1"></div>
       </button>
       <button class="active">
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 22 22"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M15.612 3.23725L17.299 1.54925C17.6507 1.19757 18.1277 1 18.625 1C19.1223 1 19.5993 1.19757 19.951 1.54925C20.3027 1.90092 20.5002 2.3779 20.5002 2.87525C20.5002 3.37259 20.3027 3.84957 19.951 4.20125L5.582 18.5702C5.05332 19.0986 4.40137 19.487 3.685 19.7002L1 20.5002L1.8 17.8152C2.01328 17.0989 2.40163 16.4469 2.93 15.9182L15.613 3.23725H15.612ZM15.612 3.23725L18.25 5.87525"
-            stroke="black"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <div class="circle" data-width="2"></div>
       </button>
       <button>
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 22 22"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M10.872 20.744C16.3241 20.744 20.744 16.3241 20.744 10.872C20.744 5.41984 16.3241 1 10.872 1C5.41984 1 1 5.41984 1 10.872C1 16.3241 5.41984 20.744 10.872 20.744Z"
-            stroke="black"
-            stroke-width="1.5"
-          />
-        </svg>
+        <div class="circle" data-width="4"></div>
       </button>
       <button>
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M1 1L18.8832 18.8832" stroke="black" stroke-width="1.5" />
-        </svg>
+        <div class="circle" data-width="8"></div>
       </button>
     </div>
-    <div class="properties">
-      <button class="show-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-          <path
-            d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"
-            fill="#333"
-          />
-        </svg>
-      </button>
-      <div class="colors">
-        <button class="active">
-          <div class="circle" data-color="red"></div>
-        </button>
-        <button>
-          <div class="circle" data-color="magenta"></div>
-        </button>
-        <button>
-          <div class="circle" data-color="black"></div>
-        </button>
-        <button>
-          <div class="circle" data-color="blue"></div>
-        </button>
-        <button>
-          <div class="circle" data-color="orange"></div>
-        </button>
-        <button>
-          <div class="circle" data-color="purple"></div>
-        </button>
-      </div>
-      <hr />
-      <button
-        class="d-btn"
-        title="Turn on/off pressure sensitivity for supported devices"
-      >
-        <div class="d-circle">
-          <svg
-            viewBox="0 0 52 76"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0.213625 76.0001C-3.78644 21.5001 49.7138 40 49.7138 0C60.7136 67.5001 2.4573 39.5 0.213625 76.0001Z"
-              fill="#333333"
-            />
-          </svg>
-        </div>
-      </button>
-      <hr />
-      <div class="width">
-        <button>
-          <div class="circle" data-width="1"></div>
-        </button>
-        <button class="active">
-          <div class="circle" data-width="2"></div>
-        </button>
-        <button>
-          <div class="circle" data-width="4"></div>
-        </button>
-        <button>
-          <div class="circle" data-width="8"></div>
-        </button>
-      </div>
-    </div>
-    <canvas id="whiteboard"></canvas>
-  </body>
+  </div>
+  <canvas id="whiteboard"></canvas>
+</body>
+
 </html>
