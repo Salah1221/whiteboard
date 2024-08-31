@@ -1,4 +1,4 @@
-import { drawingState } from "./init.js";
+import { drawingState, canvas } from "./init.js";
 import { handlePointerDown, handleToolsClick } from "./eventHandlers.js";
 
 const toolsBtns = document.body.querySelectorAll(
@@ -11,9 +11,11 @@ const colorBtns = document.body.querySelectorAll(".colors button");
 const widthCircles = document.body.querySelectorAll(".width .circle");
 const widthBtns = document.body.querySelectorAll(".width button");
 
+const modes = ["stroke", "circle", "line", "erase"];
+
 toolsBtns.forEach((toolsBtn, i, btns) => {
   toolsBtn.addEventListener("click", () => {
-    drawingState.state = i === 0 ? "stroke" : i === 1 ? "circle" : "line";
+    drawingState.state = modes[i];
     btns.forEach((btn) => {
       btn.classList.remove("active");
     });
@@ -67,7 +69,11 @@ widthBtns.forEach((widthBtn) => {
       btn.classList.remove("active");
     });
     widthBtn.classList.add("active");
+    canvas.classList.remove(`erase-${drawingState.weight}`);
+    document.body.classList.remove(`erase-${drawingState.weight}`);
     drawingState.weight = +widthBtn.children[0].dataset.width;
+    canvas.classList.add(`erase-${drawingState.weight}`);
+    document.body.classList.add(`erase-${drawingState.weight}`);
     if (!dBtn.classList.contains("active")) {
       drawingState.lineWidth = drawingState.weight;
       window.removeEventListener("pointerdown", handlePointerDown);

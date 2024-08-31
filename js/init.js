@@ -8,8 +8,6 @@ window.addEventListener("resize", () => {
   canvas.height = innerHeight;
 });
 
-let stroke = [];
-
 let lastCurveState = {
   lastX: 0,
   lastY: 0,
@@ -17,7 +15,10 @@ let lastCurveState = {
   lastMidY: 0,
 };
 
-let drawings = [];
+let drawingsObj = {
+  drawings: [],
+  stroke: [],
+};
 
 let drawingState = {
   isDrawing: false,
@@ -25,6 +26,7 @@ let drawingState = {
   color: "red",
   lineWidth: 2,
   weight: 2,
+  isErasing: false,
 };
 
 let points = {
@@ -38,12 +40,4 @@ let points = {
   },
 };
 
-export {
-  context,
-  canvas,
-  stroke,
-  lastCurveState,
-  drawings,
-  drawingState,
-  points,
-};
+export { context, canvas, lastCurveState, drawingState, points, drawingsObj };

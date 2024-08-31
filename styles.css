@@ -165,3 +165,39 @@ button {
 .width button:not(.show-btn):hover:not(.active) {
   background-color: hsl(0 0% 0% / 0.2);
 }
+
+.erase-1 {
+  cursor: url("./assets/eraser_cursor\ size\ 1.png") 2.5 2.5, auto;
+}
+
+.erase-2 {
+  cursor: url("./assets/eraser_cursor\ size\ 2.png") 5 5, auto;
+}
+
+.erase-4 {
+  cursor: url("./assets/eraser_cursor\ size\ 3.png") 10 10, auto;
+}
+
+.erase-8 {
+  cursor: url("./assets/eraser_cursor\ size\ 4.png") 20 20, auto;
+}
+
+.erase-1-pressed {
+  cursor: url("./assets/eraser_cursor\ size\ 1\ pressed.png") 2.5 2.5, auto;
+}
+
+.erase-2-pressed {
+  cursor: url("./assets/eraser_cursor\ size\ 2\ pressed.png") 5 5, auto;
+}
+
+.erase-4-pressed {
+  cursor: url("./assets/eraser_cursor\ size\ 3\ pressed.png") 10 10, auto;
+}
+
+.erase-8-pressed {
+  cursor: url("./assets/eraser_cursor\ size\ 4\ pressed.png") 20 20, auto;
+}
+
+.crosshair {
+  cursor: crosshair;
+}

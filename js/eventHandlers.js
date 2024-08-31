@@ -1,15 +1,14 @@
 import {
-  stroke,
-  drawings,
+  drawingsObj,
   drawingState,
   lastCurveState,
   points,
   canvas,
 } from "./init.js";
-import { drawStroke, ref, drawAnim } from "./drawingUtils.js";
+import { drawStroke, ref, drawAnim, eraseAt } from "./drawingUtils.js";
 import { Line, Circle } from "./shapes.js";
 
-export const strokeMouseEvents = {
+export let strokeMouseEvents = {
   mousedown: (e) => {
     drawingState.isDrawing = true;
     lastCurveState.lastX = e.clientX;
@@ -28,8 +27,8 @@ export const strokeMouseEvents = {
   },
   mouseup_out: () => {
     drawingState.isDrawing = false;
-    drawings.push(stroke);
-    stroke = [];
+    drawingsObj.drawings.push(drawingsObj.stroke);
+    drawingsObj.stroke = [];
   },
 };
 
@@ -43,7 +42,7 @@ export const handleClick = (e) => {
     canvas.removeEventListener("mousemove", handleMouseMove);
     drawingState.isDrawing = false;
     if (drawingState.state === "line")
-      drawings.push(
+      drawingsObj.drawings.push(
         new Line(
           points.p1.x,
           points.p1.y,
@@ -54,7 +53,7 @@ export const handleClick = (e) => {
         )
       );
     if (drawingState.state === "circle")
-      drawings.push(
+      drawingsObj.drawings.push(
         new Circle(
           points.p1.x,
           points.p1.y,
@@ -80,21 +79,70 @@ export const handlePointerDown = (e) => {
 
 const dBtn = document.body.querySelector(".d-btn");
 
+const handleMouseDownDelete = () => {
+  canvas.classList.remove(`erase-${drawingState.weight}`);
+  canvas.classList.add(`erase-${drawingState.weight}-pressed`);
+};
+
+const handleMouseUpDelete = () => {
+  canvas.classList.add(`erase-${drawingState.weight}`);
+  canvas.classList.remove(`erase-${drawingState.weight}-pressed`);
+};
+
 export const handleToolsClick = () => {
   if (drawingState.state === "stroke") {
     cancelAnimationFrame(ref);
+    canvas.classList.remove(`erase-${drawingState.weight}`);
+    document.body.classList.remove(`erase-${drawingState.weight}`);
+    canvas.classList.add("crosshair");
+    document.body.classList.add("crosshair");
     canvas.removeEventListener("mousemove", handleMouseMove);
     canvas.removeEventListener("click", handleClick);
+    canvas.removeEventListener("mousedown", startErasing);
+    canvas.removeEventListener("mousemove", eraseWhileMouseDown);
+    canvas.removeEventListener("mouseup", stopErasing);
+    canvas.removeEventListener("mousedown", handleMouseDownDelete);
+    canvas.removeEventListener("mouseup", handleMouseUpDelete);
+    canvas.removeEventListener("mouseleave", handleMouseUpDelete);
+    drawingState.isDrawing = false;
     canvas.addEventListener("mousedown", strokeMouseEvents.mousedown);
     canvas.addEventListener("mousemove", strokeMouseEvents.mousemove);
     canvas.addEventListener("mouseup", strokeMouseEvents.mouseup_out);
     canvas.addEventListener("mouseout", strokeMouseEvents.mouseup_out);
     dBtn.disabled = false;
+  } else if (drawingState.state === "erase") {
+    canvas.classList.add(`erase-${drawingState.weight}`);
+    document.body.classList.add(`erase-${drawingState.weight}`);
+    canvas.removeEventListener("mousemove", handleMouseMove);
+    canvas.removeEventListener("click", handleClick);
+    canvas.removeEventListener("mousedown", strokeMouseEvents.mouse);
+    canvas.removeEventListener("mousemove", strokeMouseEvents.mousemove);
+    canvas.removeEventListener("mouseup", strokeMouseEvents.mouseup_out);
+    canvas.removeEventListener("mouseout", strokeMouseEvents.mouseup_out);
+    cancelAnimationFrame(ref);
+    dBtn.disabled = true;
+    dBtn.classList.remove("active");
+    window.removeEventListener("pointerup", handlePointerDown);
+    window.removeEventListener("pointermove", handlePointerDown);
+    canvas.addEventListener("mousedown", startErasing);
+    canvas.addEventListener("mousemove", eraseWhileMouseDown);
+    canvas.addEventListener("mouseup", stopErasing);
+    canvas.addEventListener("mousedown", handleMouseDownDelete);
+    canvas.addEventListener("mouseup", handleMouseUpDelete);
+    canvas.addEventListener("mouseleave", handleMouseUpDelete);
   } else {
+    canvas.classList.remove(`erase-${drawingState.weight}`);
+    document.body.classList.remove(`erase-${drawingState.weight}`);
     canvas.removeEventListener("mousedown", strokeMouseEvents.mousedown);
     canvas.removeEventListener("mousemove", strokeMouseEvents.mousemove);
     canvas.removeEventListener("mouseup", strokeMouseEvents.mouseup_out);
     canvas.removeEventListener("mouseout", strokeMouseEvents.mouseup_out);
+    canvas.removeEventListener("mousedown", startErasing);
+    canvas.removeEventListener("mousemove", eraseWhileMouseDown);
+    canvas.removeEventListener("mouseup", stopErasing);
+    canvas.removeEventListener("mousedown", handleMouseDownDelete);
+    canvas.removeEventListener("mouseup", handleMouseUpDelete);
+    canvas.removeEventListener("mouseleave", handleMouseUpDelete);
     canvas.addEventListener("click", handleClick);
     cancelAnimationFrame(ref);
     dBtn.disabled = true;
@@ -102,5 +150,20 @@ export const handleToolsClick = () => {
     window.removeEventListener("pointerup", handlePointerDown);
     window.removeEventListener("pointermove", handlePointerDown);
     drawAnim();
+  }
+};
+
+export const startErasing = (e) => {
+  drawingState.isErasing = true;
+  eraseAt(e.clientX, e.clientY);
+};
+
+export const stopErasing = () => {
+  drawingState.isErasing = false;
+};
+
+export const eraseWhileMouseDown = (e) => {
+  if (drawingState.isErasing) {
+    eraseAt(e.clientX, e.clientY);
   }
 };
