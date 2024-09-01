@@ -175,11 +175,11 @@ button {
 }
 
 .erase-4 {
-  cursor: url("./assets/eraser_cursor\ size\ 3.png") 10 10, auto;
+  cursor: url("./assets/eraser_cursor\ size\ 4.png") 10 10, auto;
 }
 
 .erase-8 {
-  cursor: url("./assets/eraser_cursor\ size\ 4.png") 20 20, auto;
+  cursor: url("./assets/eraser_cursor\ size\ 8.png") 20 20, auto;
 }
 
 .erase-1-pressed {
@@ -191,11 +191,11 @@ button {
 }
 
 .erase-4-pressed {
-  cursor: url("./assets/eraser_cursor\ size\ 3\ pressed.png") 10 10, auto;
+  cursor: url("./assets/eraser_cursor\ size\ 4\ pressed.png") 10 10, auto;
 }
 
 .erase-8-pressed {
-  cursor: url("./assets/eraser_cursor\ size\ 4\ pressed.png") 20 20, auto;
+  cursor: url("./assets/eraser_cursor\ size\ 8\ pressed.png") 20 20, auto;
 }
 
 .crosshair {

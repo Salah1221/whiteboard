@@ -81,29 +81,49 @@ export const drawAnim = () => {
   ref = requestAnimationFrame(drawAnim);
 };
 
-const isPointInEraser = (erase_x, erase_y, erase_radius, x, y) => {
-  return Math.hypot(erase_x - x, erase_y - y) <= erase_radius;
+const distanceBetweenPointAndLine = (x1, y1, x2, y2, x0, y0) => {
+  return (
+    Math.abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1) /
+    Math.hypot(y2 - y1, x2 - x1)
+  );
 };
 
 const isCircleIntersectingEraser = (erase_x, erase_y, erase_radius, circle) => {
   return (
     Math.hypot(erase_x - circle.x, erase_y - circle.y) <=
-    erase_radius + circle.R
+      erase_radius + circle.R &&
+    Math.hypot(erase_x - circle.x, erase_y - circle.y) >=
+      Math.abs(erase_radius - circle.R)
   );
 };
 
 const isLineIntersectingEraser = (erase_x, erase_y, erase_radius, line) => {
-  // formula from: https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#Line_defined_by_two_points
-  return (
-    Math.abs(
-      (line.y2 - line.y1) * erase_x -
-        (line.x2 - line.x1) * erase_y +
-        line.x2 * line.y1 -
-        line.y2 * line.x1
-    ) /
-      Math.hypot(line.y2 - line.y1, line.x2 - line.y1) <=
-    erase_radius
-  );
+  // Check if the distance from eraser to line is less than or equal to the radius
+  if (
+    distanceBetweenPointAndLine(
+      line.x1,
+      line.y1,
+      line.x2,
+      line.y2,
+      erase_x,
+      erase_y
+    ) > erase_radius
+  ) {
+    return false;
+  }
+
+  // Calculate the squared length of the line segment
+  const lineLength2 =
+    Math.pow(line.x2 - line.x1, 2) + Math.pow(line.y2 - line.y1, 2);
+
+  // Calculate the dot product of (eraser - line1) and (line2 - line1)
+  const dot =
+    ((erase_x - line.x1) * (line.x2 - line.x1) +
+      (erase_y - line.y1) * (line.y2 - line.y1)) /
+    lineLength2;
+
+  // Check if the closest point is on the line segment
+  return dot >= 0 && dot <= 1;
 };
 
 export const eraseAt = (erase_x, erase_y) => {
@@ -112,13 +132,7 @@ export const eraseAt = (erase_x, erase_y) => {
     if (Array.isArray(drawing)) {
       for (let i = 0; i < drawing.length; i++) {
         if (
-          isPointInEraser(
-            erase_x,
-            erase_y,
-            eraserSize,
-            drawing[i].cpx,
-            drawing[i].cpy
-          )
+          isLineIntersectingEraser(erase_x, erase_y, eraserSize, drawing[i])
         ) {
           return false;
         }

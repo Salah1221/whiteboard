@@ -1,4 +1,4 @@
-import { drawingState, canvas } from "./init.js";
+import { canvas, drawingState } from "./init.js";
 import { handlePointerDown, handleToolsClick } from "./eventHandlers.js";
 
 const toolsBtns = document.body.querySelectorAll(
@@ -69,11 +69,14 @@ widthBtns.forEach((widthBtn) => {
       btn.classList.remove("active");
     });
     widthBtn.classList.add("active");
-    canvas.classList.remove(`erase-${drawingState.weight}`);
-    document.body.classList.remove(`erase-${drawingState.weight}`);
     drawingState.weight = +widthBtn.children[0].dataset.width;
-    canvas.classList.add(`erase-${drawingState.weight}`);
-    document.body.classList.add(`erase-${drawingState.weight}`);
+    if (drawingState.state === "erase") {
+      canvas.style.cursor = `url('./assets/eraser_cursor\ size\ ${
+        drawingState.weight
+      }.png') ${(5 * drawingState.weight) / 2} ${
+        (5 * drawingState.weight) / 2
+      }, auto`;
+    }
     if (!dBtn.classList.contains("active")) {
       drawingState.lineWidth = drawingState.weight;
       window.removeEventListener("pointerdown", handlePointerDown);
