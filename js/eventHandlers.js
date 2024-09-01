@@ -98,7 +98,6 @@ const dBtn = document.body.querySelector(".d-btn");
 
 export const handleToolsClick = () => {
   if (drawingState.state === "stroke") {
-    cancelAnimationFrame(ref);
     canvas.style.cursor = "crosshair";
     canvas.removeEventListener("mousemove", handleMouseMove);
     canvas.removeEventListener("click", handleClick);
@@ -107,11 +106,12 @@ export const handleToolsClick = () => {
     canvas.removeEventListener("mouseup", stopErasing);
     canvas.removeEventListener("mousedown", mouseDownDelete);
     canvas.removeEventListener("mouseup", mouseUpDelete);
-    drawingState.isDrawing = false;
     canvas.addEventListener("mousedown", strokeMouseEvents.mousedown);
     canvas.addEventListener("mousemove", strokeMouseEvents.mousemove);
     canvas.addEventListener("mouseup", strokeMouseEvents.mouseup_out);
     canvas.addEventListener("mouseout", strokeMouseEvents.mouseup_out);
+    cancelAnimationFrame(ref);
+    drawingState.isDrawing = false;
     dBtn.disabled = false;
   } else if (drawingState.state === "erase") {
     canvas.style.cursor = `url('./assets/eraser_cursor\ size\ ${
@@ -125,9 +125,6 @@ export const handleToolsClick = () => {
     canvas.removeEventListener("mousemove", strokeMouseEvents.mousemove);
     canvas.removeEventListener("mouseup", strokeMouseEvents.mouseup_out);
     canvas.removeEventListener("mouseout", strokeMouseEvents.mouseup_out);
-    cancelAnimationFrame(ref);
-    dBtn.disabled = true;
-    dBtn.classList.remove("active");
     window.removeEventListener("pointerup", handlePointerDown);
     window.removeEventListener("pointermove", handlePointerDown);
     canvas.addEventListener("mousedown", startErasing);
@@ -135,6 +132,9 @@ export const handleToolsClick = () => {
     canvas.addEventListener("mouseup", stopErasing);
     canvas.addEventListener("mousedown", mouseDownDelete);
     canvas.addEventListener("mouseup", mouseUpDelete);
+    cancelAnimationFrame(ref);
+    dBtn.disabled = true;
+    dBtn.classList.remove("active");
   } else {
     canvas.style.cursor = "crosshair";
     canvas.removeEventListener("mousedown", strokeMouseEvents.mousedown);
@@ -146,12 +146,12 @@ export const handleToolsClick = () => {
     canvas.removeEventListener("mouseup", stopErasing);
     canvas.removeEventListener("mousedown", mouseDownDelete);
     canvas.removeEventListener("mouseup", mouseUpDelete);
+    window.removeEventListener("pointerup", handlePointerDown);
+    window.removeEventListener("pointermove", handlePointerDown);
     canvas.addEventListener("click", handleClick);
     cancelAnimationFrame(ref);
     dBtn.disabled = true;
     dBtn.classList.remove("active");
-    window.removeEventListener("pointerup", handlePointerDown);
-    window.removeEventListener("pointermove", handlePointerDown);
     drawAnim();
   }
 };
