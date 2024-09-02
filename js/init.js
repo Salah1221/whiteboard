@@ -18,6 +18,7 @@ let lastCurveState = {
 let drawingsObj = {
   drawings: [],
   stroke: [],
+  redo: [],
 };
 
 let drawingState = {

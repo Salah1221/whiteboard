@@ -125,7 +125,7 @@ export const handleToolsClick = () => {
     canvas.removeEventListener("mousemove", strokeMouseEvents.mousemove);
     canvas.removeEventListener("mouseup", strokeMouseEvents.mouseup_out);
     canvas.removeEventListener("mouseout", strokeMouseEvents.mouseup_out);
-    window.removeEventListener("pointerup", handlePointerDown);
+    window.removeEventListener("pointerdown", handlePointerDown);
     window.removeEventListener("pointermove", handlePointerDown);
     canvas.addEventListener("mousedown", startErasing);
     canvas.addEventListener("mousemove", eraseWhileMouseDown);
@@ -135,6 +135,7 @@ export const handleToolsClick = () => {
     cancelAnimationFrame(ref);
     dBtn.disabled = true;
     dBtn.classList.remove("active");
+    drawingState.lineWidth = drawingState.weight;
   } else {
     canvas.style.cursor = "crosshair";
     canvas.removeEventListener("mousedown", strokeMouseEvents.mousedown);
@@ -146,12 +147,13 @@ export const handleToolsClick = () => {
     canvas.removeEventListener("mouseup", stopErasing);
     canvas.removeEventListener("mousedown", mouseDownDelete);
     canvas.removeEventListener("mouseup", mouseUpDelete);
-    window.removeEventListener("pointerup", handlePointerDown);
+    window.removeEventListener("pointerdown", handlePointerDown);
     window.removeEventListener("pointermove", handlePointerDown);
     canvas.addEventListener("click", handleClick);
     cancelAnimationFrame(ref);
     dBtn.disabled = true;
     dBtn.classList.remove("active");
+    drawingState.lineWidth = drawingState.weight;
     drawAnim();
   }
 };

@@ -19,7 +19,7 @@ export const drawStroke = (x, y, colour = "orange", lWidth = 2) => {
     lastCurveState.lastX,
     lastCurveState.lastY,
     x,
-    y
+    y,
   );
 
   let curve = new QuadCurve(
@@ -30,7 +30,7 @@ export const drawStroke = (x, y, colour = "orange", lWidth = 2) => {
     lastCurveState.lastX,
     lastCurveState.lastY,
     colour,
-    lWidth
+    lWidth,
   );
 
   curve.draw();
@@ -67,7 +67,7 @@ export const drawAnim = () => {
       points.p2.x,
       points.p2.y,
       drawingState.color,
-      drawingState.lineWidth
+      drawingState.lineWidth,
     ).draw();
   if (drawingState.state === "circle")
     new Circle(
@@ -76,7 +76,7 @@ export const drawAnim = () => {
       Math.hypot(points.p1.x - points.p2.x, points.p1.y - points.p2.y),
       drawingState.color,
       "transparent",
-      drawingState.lineWidth
+      drawingState.lineWidth,
     ).draw();
   ref = requestAnimationFrame(drawAnim);
 };
@@ -91,14 +91,19 @@ const distanceBetweenPointAndLine = (x1, y1, x2, y2, x0, y0) => {
 const isCircleIntersectingEraser = (erase_x, erase_y, erase_radius, circle) => {
   return (
     Math.hypot(erase_x - circle.x, erase_y - circle.y) <=
-      erase_radius + circle.R &&
+      erase_radius + circle.R - circle.lineWidth &&
     Math.hypot(erase_x - circle.x, erase_y - circle.y) >=
-      Math.abs(erase_radius - circle.R)
+      Math.abs(erase_radius - circle.R - circle.lineWidth)
   );
 };
 
-const isLineIntersectingEraser = (erase_x, erase_y, erase_radius, line) => {
-  // Check if the distance from eraser to line is less than or equal to the radius
+const isLineIntersectingEraser = (
+  erase_x,
+  erase_y,
+  erase_radius,
+  line,
+  interval = [0, 1],
+) => {
   if (
     distanceBetweenPointAndLine(
       line.x1,
@@ -106,24 +111,21 @@ const isLineIntersectingEraser = (erase_x, erase_y, erase_radius, line) => {
       line.x2,
       line.y2,
       erase_x,
-      erase_y
+      erase_y,
     ) > erase_radius
   ) {
     return false;
   }
 
-  // Calculate the squared length of the line segment
   const lineLength2 =
     Math.pow(line.x2 - line.x1, 2) + Math.pow(line.y2 - line.y1, 2);
 
-  // Calculate the dot product of (eraser - line1) and (line2 - line1)
   const dot =
     ((erase_x - line.x1) * (line.x2 - line.x1) +
       (erase_y - line.y1) * (line.y2 - line.y1)) /
     lineLength2;
 
-  // Check if the closest point is on the line segment
-  return dot >= 0 && dot <= 1;
+  return dot >= interval[0] && dot <= interval[1];
 };
 
 export const eraseAt = (erase_x, erase_y) => {
@@ -132,7 +134,19 @@ export const eraseAt = (erase_x, erase_y) => {
     if (Array.isArray(drawing)) {
       for (let i = 0; i < drawing.length; i++) {
         if (
-          isLineIntersectingEraser(erase_x, erase_y, eraserSize, drawing[i])
+          isLineIntersectingEraser(
+            erase_x,
+            erase_y,
+            eraserSize - drawingState.weight / 2,
+            {
+              x1: drawing[i].x1,
+              y1: drawing[i].y1,
+              x2: drawing[i].cpx,
+              y2: drawing[i].cpy,
+            },
+          ) ||
+          Math.hypot(erase_x - drawing[i].cpx, erase_y - drawing[i].cpy) <=
+            eraserSize - drawingState.weight / 2
         ) {
           return false;
         }
@@ -140,13 +154,17 @@ export const eraseAt = (erase_x, erase_y) => {
       return true;
     } else {
       if (drawing instanceof Line) {
-        return !isLineIntersectingEraser(erase_x, erase_y, eraserSize, drawing);
+        return (
+          !isLineIntersectingEraser(erase_x, erase_y, eraserSize, drawing) &&
+          Math.hypot(erase_x - drawing.x1, erase_y - drawing.y1) > eraserSize &&
+          Math.hypot(erase_x - drawing.x2, erase_y - drawing.y2) > eraserSize
+        );
       } else if (drawing instanceof Circle) {
         return !isCircleIntersectingEraser(
           erase_x,
           erase_y,
           eraserSize,
-          drawing
+          drawing,
         );
       }
     }
