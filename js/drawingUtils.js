@@ -43,7 +43,7 @@ export const drawStroke = (x, y, colour = "orange", lWidth = 2) => {
   lastCurveState.lastY = y;
 };
 
-const redrawFrame = () => {
+export const redrawFrame = () => {
   context.clearRect(0, 0, innerWidth, innerHeight);
   for (let i = 0; i < drawingsObj.drawings.length; i++) {
     if (!Array.isArray(drawingsObj.drawings[i])) {
@@ -128,6 +128,9 @@ const isLineIntersectingEraser = (
   return dot >= interval[0] && dot <= interval[1];
 };
 
+const undoBtn = document.body.querySelector("button.undo");
+const redoBtn = document.body.querySelector("button.redo");
+
 export const eraseAt = (erase_x, erase_y) => {
   const eraserSize = drawingState.lineWidth * 5;
   drawingsObj.drawings = drawingsObj.drawings.filter((drawing) => {
@@ -148,26 +151,37 @@ export const eraseAt = (erase_x, erase_y) => {
           Math.hypot(erase_x - drawing[i].cpx, erase_y - drawing[i].cpy) <=
             eraserSize - drawingState.weight / 2
         ) {
+          pushToUndo("erase", drawing);
           return false;
         }
       }
       return true;
     } else {
       if (drawing instanceof Line) {
-        return (
+        const keepLine =
           !isLineIntersectingEraser(erase_x, erase_y, eraserSize, drawing) &&
           Math.hypot(erase_x - drawing.x1, erase_y - drawing.y1) > eraserSize &&
-          Math.hypot(erase_x - drawing.x2, erase_y - drawing.y2) > eraserSize
-        );
+          Math.hypot(erase_x - drawing.x2, erase_y - drawing.y2) > eraserSize;
+        if (!keepLine) pushToUndo("erase", drawing);
+        return keepLine;
       } else if (drawing instanceof Circle) {
-        return !isCircleIntersectingEraser(
+        const keepCircle = !isCircleIntersectingEraser(
           erase_x,
           erase_y,
           eraserSize,
           drawing,
         );
+        if (!keepCircle) pushToUndo("erase", drawing);
+        return keepCircle;
       }
     }
   });
   redrawFrame();
+};
+
+export const pushToUndo = (operation, element) => {
+  drawingsObj.undo.push({ operation, element });
+  drawingsObj.redo = [];
+  undoBtn.disabled = false;
+  redoBtn.disabled = true;
 };

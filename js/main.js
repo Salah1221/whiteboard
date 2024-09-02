@@ -1,8 +1,13 @@
 import { canvas, drawingState } from "./init.js";
-import { handlePointerDown, handleToolsClick } from "./eventHandlers.js";
+import {
+  handlePointerDown,
+  handleRedo,
+  handleToolsClick,
+  handleUndo,
+} from "./eventHandlers.js";
 
 const toolsBtns = document.body.querySelectorAll(
-  ".tools > button:not(.show-btn)"
+  ".tools > button:not(.show-btn)",
 );
 
 const dBtn = document.body.querySelector(".d-btn");
@@ -99,3 +104,9 @@ dBtn.addEventListener("click", () => {
     window.addEventListener("pointermove", handlePointerDown);
   }
 });
+
+const undoBtn = document.body.querySelector("button.undo");
+const redoBtn = document.body.querySelector("button.redo");
+
+undoBtn.addEventListener("click", handleUndo);
+redoBtn.addEventListener("click", handleRedo);

@@ -19,6 +19,7 @@ let drawingsObj = {
   drawings: [],
   stroke: [],
   redo: [],
+  undo: [],
 };
 
 let drawingState = {

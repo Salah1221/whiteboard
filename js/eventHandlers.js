@@ -5,7 +5,14 @@ import {
   points,
   canvas,
 } from "./init.js";
-import { drawStroke, ref, drawAnim, eraseAt } from "./drawingUtils.js";
+import {
+  drawStroke,
+  ref,
+  drawAnim,
+  eraseAt,
+  pushToUndo,
+  redrawFrame,
+} from "./drawingUtils.js";
 import { Line, Circle } from "./shapes.js";
 
 export let strokeMouseEvents = {
@@ -22,13 +29,15 @@ export let strokeMouseEvents = {
       e.clientX,
       e.clientY,
       drawingState.color,
-      drawingState.lineWidth
+      drawingState.lineWidth,
     );
   },
   mouseup_out: () => {
     drawingState.isDrawing = false;
-    if (drawingsObj.stroke.length > 0)
+    if (drawingsObj.stroke.length > 0) {
       drawingsObj.drawings.push(drawingsObj.stroke);
+      pushToUndo("draw", drawingsObj.stroke);
+    }
     drawingsObj.stroke = [];
   },
 };
@@ -42,28 +51,30 @@ export const handleClick = (e) => {
   if (drawingState.isDrawing) {
     canvas.removeEventListener("mousemove", handleMouseMove);
     drawingState.isDrawing = false;
-    if (drawingState.state === "line")
-      drawingsObj.drawings.push(
-        new Line(
-          points.p1.x,
-          points.p1.y,
-          points.p2.x,
-          points.p2.y,
-          drawingState.color,
-          drawingState.lineWidth
-        )
+    if (drawingState.state === "line") {
+      const line = new Line(
+        points.p1.x,
+        points.p1.y,
+        points.p2.x,
+        points.p2.y,
+        drawingState.color,
+        drawingState.lineWidth,
       );
-    if (drawingState.state === "circle")
-      drawingsObj.drawings.push(
-        new Circle(
-          points.p1.x,
-          points.p1.y,
-          Math.hypot(points.p1.x - points.p2.x, points.p1.y - points.p2.y),
-          drawingState.color,
-          "transparent",
-          drawingState.lineWidth
-        )
+      drawingsObj.drawings.push(line);
+      pushToUndo("draw", line);
+    }
+    if (drawingState.state === "circle") {
+      const circle = new Circle(
+        points.p1.x,
+        points.p1.y,
+        Math.hypot(points.p1.x - points.p2.x, points.p1.y - points.p2.y),
+        drawingState.color,
+        "transparent",
+        drawingState.lineWidth,
       );
+      drawingsObj.drawings.push(circle);
+      pushToUndo("draw", circle);
+    }
     points.p1.x = points.p2.x = points.p1.y = points.p2.y = undefined;
   } else {
     points.p1.x = e.clientX;
@@ -171,4 +182,33 @@ export const eraseWhileMouseDown = (e) => {
   if (drawingState.isErasing) {
     eraseAt(e.clientX, e.clientY);
   }
+};
+
+const redoBtn = document.body.querySelector("button.redo");
+const undoBtn = document.body.querySelector("button.undo");
+
+export const handleUndo = () => {
+  const lastAction = drawingsObj.undo.pop();
+  if (drawingsObj.undo.length === 0) undoBtn.disabled = true;
+  drawingsObj.redo.push(lastAction);
+  redoBtn.disabled = false;
+  if (lastAction.operation === "draw") {
+    drawingsObj.drawings.pop();
+  } else if (lastAction.operation === "erase") {
+    drawingsObj.drawings.push(lastAction.element);
+  }
+  redrawFrame();
+};
+
+export const handleRedo = () => {
+  const lastAction = drawingsObj.redo.pop();
+  if (drawingsObj.redo.length === 0) redoBtn.disabled = true;
+  drawingsObj.undo.push(lastAction);
+  undoBtn.disabled = false;
+  if (lastAction.operation === "draw") {
+    drawingsObj.drawings.push(lastAction.element);
+  } else if (lastAction.operation === "erase") {
+    drawingsObj.drawings.pop();
+  }
+  redrawFrame();
 };
