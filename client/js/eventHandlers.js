@@ -147,7 +147,7 @@ export const handleToolsClick = () => {
     dBtn.disabled = true;
     dBtn.classList.remove("active");
     drawingState.lineWidth = drawingState.weight;
-  } else {
+  } else if (drawingState.state === "line" || drawingState.state === "circle") {
     canvas.style.cursor = "crosshair";
     canvas.removeEventListener("mousedown", strokeMouseEvents.mousedown);
     canvas.removeEventListener("mousemove", strokeMouseEvents.mousemove);
@@ -196,6 +196,8 @@ export const handleUndo = () => {
     drawingsObj.drawings.pop();
   } else if (lastAction.operation === "erase") {
     drawingsObj.drawings.push(lastAction.element);
+  } else if (lastAction.operation === "clear") {
+    drawingsObj.drawings.push(...lastAction.element);
   }
   redrawFrame();
 };
@@ -209,6 +211,14 @@ export const handleRedo = () => {
     drawingsObj.drawings.push(lastAction.element);
   } else if (lastAction.operation === "erase") {
     drawingsObj.drawings.pop();
+  } else if (lastAction.operation === "clear") {
+    drawingsObj.drawings = [];
   }
+  redrawFrame();
+};
+
+export const clearCanvas = () => {
+  drawingsObj.undo.push({ operation: "clear", element: drawingsObj.drawings });
+  drawingsObj.drawings = [];
   redrawFrame();
 };

@@ -1,5 +1,6 @@
 import { canvas, drawingState } from "./init.js";
 import {
+  clearCanvas,
   handlePointerDown,
   handleRedo,
   handleToolsClick,
@@ -7,16 +8,21 @@ import {
 } from "./eventHandlers.js";
 
 const toolsBtns = document.body.querySelectorAll(
-  ".tools > button:not(.show-btn)",
+  ".tools > button:not(.show-btn):not(.clear)",
 );
-
 const dBtn = document.body.querySelector(".d-btn");
 const colorCircles = document.body.querySelectorAll(".colors .circle");
 const colorBtns = document.body.querySelectorAll(".colors button");
 const widthCircles = document.body.querySelectorAll(".width .circle");
 const widthBtns = document.body.querySelectorAll(".width button");
+const undoBtn = document.body.querySelector("button.undo");
+const redoBtn = document.body.querySelector("button.redo");
+const clearBtn = document.body.querySelector("button.clear");
 
-const modes = ["stroke", "circle", "line", "erase"];
+const modes = ["stroke", "circle", "line", "erase", "clear"];
+
+undoBtn.disabled = true;
+redoBtn.disabled = true;
 
 toolsBtns.forEach((toolsBtn, i, btns) => {
   toolsBtn.addEventListener("click", () => {
@@ -105,8 +111,7 @@ dBtn.addEventListener("click", () => {
   }
 });
 
-const undoBtn = document.body.querySelector("button.undo");
-const redoBtn = document.body.querySelector("button.redo");
-
 undoBtn.addEventListener("click", handleUndo);
 redoBtn.addEventListener("click", handleRedo);
+
+clearBtn.addEventListener("click", clearCanvas);
