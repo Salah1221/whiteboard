@@ -137,19 +137,20 @@ export const eraseAt = (erase_x, erase_y) => {
     if (Array.isArray(drawing)) {
       for (let i = 0; i < drawing.length; i++) {
         if (
-          isLineIntersectingEraser(
-            erase_x,
-            erase_y,
-            eraserSize - drawingState.weight / 2,
-            {
-              x1: drawing[i].x1,
-              y1: drawing[i].y1,
-              x2: drawing[i].cpx,
-              y2: drawing[i].cpy,
-            },
-          ) ||
-          Math.hypot(erase_x - drawing[i].cpx, erase_y - drawing[i].cpy) <=
-            eraserSize - drawingState.weight / 2
+          isLineIntersectingEraser(erase_x, erase_y, eraserSize, {
+            x1: drawing[i].x1,
+            y1: drawing[i].y1,
+            x2: drawing[i].cpx,
+            y2: drawing[i].cpy,
+          }) ||
+          isLineIntersectingEraser(erase_x, erase_y, eraserSize, {
+            x1: drawing[i].cpx,
+            y1: drawing[i].cpy,
+            x2: drawing[i].x2,
+            y2: drawing[i].y2,
+          }) ||
+          Math.hypot(erase_x - drawing[i].x2, erase_y - drawing[i].y2) <=
+            eraserSize
         ) {
           pushToUndo("erase", drawing);
           return false;
